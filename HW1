@@ -1,0 +1,51 @@
+-- 1
+select e1.name as employee_name,
+       e2.name as chief_name,
+       e1.salary as employee_salary,
+       e2.salary as chief_salary,
+       d.name as department_name
+from employee e1
+         left join employee e2 on e1.chief_id = e2.id
+         join department d on d.id = e1.department_id
+where e1.salary > e2.salary;
+
+
+-- 2
+select e1.name as employee_name, 
+       e1.salary as employee_salary, 
+       d.name as department_name
+from employee e1
+         left join department d on d.id = e1.department_id
+where e1.salary = (select max(salary)
+                   from employee e2 where e2.department_id = e1.department_id);
+
+-- 3
+select e.department_id
+from department d
+         left join employee e on d.id = e.department_id
+where e.department_id IS NOT NULL
+group by e.department_id
+having count(e.department_id) < 4;
+
+
+-- 4
+select e1.name, 
+       e1.chief_id
+from employee e1
+         left join employee e2 on (e1.chief_id = e2.id 
+and e2.department_id = e1.department_id)
+where e2.id is null;
+
+
+-- 5
+with department_sum_salary as (
+    select e.department_id, 
+           sum(salary) as salary
+    from employee e
+    group by e.department_id
+)
+select d.name, 
+       ds.salary
+from department_sum_salary dss
+         left join department d on d.id = dss.department_id
+where dss.salary = (select max(salary) from department_sum_salary);
