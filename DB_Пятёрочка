@@ -91,12 +91,12 @@ from warehouse_product as wp
          join product p on p.id = wp.product_id;
 
 
---Выполнить
 create materialized view store_employee_materialized as
 select se.store_id, se.employee_id, e.name
 from store_employee as se
          join employee e on e.id = se.employee_id;
---Выполнить
+
+
 create materialized view warehouse_store_materialized as
 select wp.warehouse_id, wp.product_id, p.price
 from warehouse_product as wp
